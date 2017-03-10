@@ -20,14 +20,16 @@
     </stdio>
     <command><![CDATA[
         Rscript '$__tool_directory__'/goseq.r --dge_file '$dge_file'
-        --length_file '$length_file'
-        --category_file '$category_file'
+       # --length_file '$length_file'
+        #--category_file '$category_file'
         #if $methods['wallenius']:
         --wallenius_tab '$wallenius_tab'
         #end if
         #if $methods['hypergeometric']:
         --nobias_tab 'nobias_tab'
         #end if
+        --genome '$genome'
+        --gene_id '$gene_id'
         --repcnt '$methods.repcnt'
         --sampling_tab '$sampling_tab'
         --p_adj_method '$p_adj_method'
@@ -38,8 +40,19 @@
     ]]></command>
     <inputs>
         <param name="dge_file" help="A tabular file with gene names in the first column, and TRUE or FALSE in the last column. TRUE means a gene is differentially expressed. See help section for details." label="Differentially expressed gene file" type="data" format="tabular" />
-        <param name="length_file" label="Gene length file for length bias correction" help="You can calculate the gene length using the get length and gc content tool" type="data" format="tabular" />
-        <param name="category_file" label="Gene category file" help="You can obtain a mapping of gene id to gene ontology using the getgo tool" type="data" format="tabular" />
+        <!--param name="length_file" label="Gene length file for length bias correction" help="You can calculate the gene length using the get length and gc content tool" type="data" format="tabular" /-->
+        <!--param name="category_file" label="Gene category file" help="You can obtain a mapping of gene id to gene ontology using the getgo tool" type="data" format="tabular" /-->
+        <param name="genome" type="select" label="Select the Genome version your data were aligned to">
+          <option value="hg38" selected="true">GRCh38</option>
+          <option value="hg19">hg19 (GRCh37)</option>
+          <option value="mm10">mm10</option>
+          <option value="mm9">mm9</option>
+        </param>
+        <param name="gene_id" type="select" label="Select the type of Gene Identifier present in the Gene Table">
+          <option value="ensGene" selected="true">Ensembl ID</option>
+          <option value="knownGene">UCSC Genes</option>
+          <option value="geneSymbol">Gene Symbol</option>
+        </param>  
         <param name="use_genes_without_cat" help="For example, a large number of gene may have no GO term annotated. If this option is set to FALSE, those genes will be ignored in the calculation of p-values. If this option is set to TRUE, then these genes will count towards the total number of genes outside the category being tested"
                label="Count genes without any category?" type="boolean"/>
         <section name="methods" title="Method options" expanded="True">
