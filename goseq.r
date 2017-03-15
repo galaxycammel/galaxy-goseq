@@ -31,8 +31,8 @@ args = parse_args(parser)
 
 # Vars:
 dge_file = args$dge_file
-category_file = args$category_file
-length_file = args$length_file
+#category_file = args$category_file
+#length_file = args$length_file
 genome = args$genome
 gene_id = args$gene_id
 wallenius_tab = args$wallenius_tab
@@ -51,18 +51,19 @@ genes = as.numeric(as.logical(dge_table[,ncol(dge_table)])) # Last column contai
 names(genes) = dge_table[,1] # Assuming first column contains gene names
 
 # gene lengths, assuming last column
-if (length_file != "FALSE" ) {
-  first_line = read.delim(dge_file, header = FALSE, nrow=1)
-  if (is.numeric(first_line[, ncol(first_line)])) {
-    length_table = read.delim(length_file, header=FALSE, sep="\t", check.names=FALSE)
-    } else {
-    length_table = read.delim(length_file, header=TRUE, sep="\t", check.names=FALSE)
-    }
-  row.names(length_table) = length_table[,1]
-  gene_lengths = length_table[names(genes),][,ncol(length_table)]
-  } else {
-  gene_lengths = getlength(names(genes), genome, gene_id)
-  }
+## We're not going to supply a length file, so skip straight to using the genome name and gene ID type
+#if (length_file != "FALSE" ) {
+#  first_line = read.delim(dge_file, header = FALSE, nrow=1)
+#  if (is.numeric(first_line[, ncol(first_line)])) {
+#    length_table = read.delim(length_file, header=FALSE, sep="\t", check.names=FALSE)
+#    } else {
+#    length_table = read.delim(length_file, header=TRUE, sep="\t", check.names=FALSE)
+#    }
+#  row.names(length_table) = length_table[,1]
+#  gene_lengths = length_table[names(genes),][,ncol(length_table)]
+#  } else {
+gene_lengths = getlength(names(genes), genome, gene_id)
+# }
 
 # Estimate PWF
 
@@ -73,17 +74,18 @@ pwf=nullp(genes, genome = genome, id = gene_id, bias.data = gene_lengths, plot.f
 graphics.off()
 
 # Fetch GO annotations if category_file hasn't been supplied:
-if (category_file == "FALSE") {
-  go_map=getgo(genes = names(genes), genome = genome, id = gene_id, fetch.cats=c("GO:CC", "GO:BP", "GO:MF", "KEGG"))
-  } else {
-  # check for header: first entry in first column must be present in genes, else it's a header
-  first_line = read.delim(category_file, header = FALSE, nrow=1)
-  if (first_line[,1] %in% names(genes)) {
-     go_map = read.delim(category_file, header = FALSE)
-     } else {
-     go_map = read.delim(category_file, header= TRUE)
-    }
-}
+## We're not specifying the file, so skip straight to generating the map from the genome name
+#if (category_file == "FALSE") {
+go_map=getgo(genes = names(genes), genome = genome, id = gene_id, fetch.cats=c("GO:CC", "GO:BP", "GO:MF", "KEGG"))
+#  } else {
+#  # check for header: first entry in first column must be present in genes, else it's a header
+#  first_line = read.delim(category_file, header = FALSE, nrow=1)
+#  if (first_line[,1] %in% names(genes)) {
+#     go_map = read.delim(category_file, header = FALSE)
+#     } else {
+#     go_map = read.delim(category_file, header= TRUE)
+#    }
+#}
 
 # wallenius approximation of p-values
 if (wallenius_tab != "" && wallenius_tab!="None") {
