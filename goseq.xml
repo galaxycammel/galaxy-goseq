@@ -20,8 +20,6 @@
     </stdio>
     <command><![CDATA[
         Rscript '$__tool_directory__'/goseq.r --dge_file '$dge_file'
-       # --length_file '$length_file'
-        #--category_file '$category_file'
         #if $methods['wallenius']:
         --wallenius_tab '$wallenius_tab'
         #end if
